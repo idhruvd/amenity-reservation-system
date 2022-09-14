@@ -22,7 +22,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -51,6 +50,15 @@ public class User {
     )
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    private String fullName;
+
+    @Column(nullable = false, unique = true)
+    private String userName;
+
+    @Column
+    private String passwordHash;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Set<Reservation> userReservations = new HashSet<>();
 
@@ -72,4 +80,12 @@ public class User {
     public void preUpdate() {
         lastUpdated = OffsetDateTime.now();
     }
+
+    public User(String fullName, String userName, String passwordHash) {
+        this.fullName = fullName;
+        this.userName = userName;
+        this.passwordHash = passwordHash;
+    }
+
+    
 }

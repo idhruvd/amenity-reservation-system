@@ -11,6 +11,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.amenity_reservation_system.model.AmenityType;
 import com.amenity_reservation_system.model.Reservation;
@@ -30,7 +31,9 @@ public class AmenityReservationSystemApplication {
     public CommandLineRunner loadData(UserRepository userRepository,
                                       ReservationRepository reservationRepository) {
         return (args) -> {
-            User user = userRepository.save(new User());
+            User user = userRepository.save(
+                new User("Dhruv", "dhruv_rd", bCryptPasswordEncoder().encode("12345"))
+            );
             DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             Date date = new Date();
             LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -45,4 +48,9 @@ public class AmenityReservationSystemApplication {
             reservationRepository.save(reservation);
         };
     } 
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

@@ -6,4 +6,6 @@ import com.amenity_reservation_system.model.User;
 
 
 public interface UserRepository extends JpaRepository<User, Long> {
+
+    User findUserByUserName(String username);
 }
