@@ -4,6 +4,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,12 +37,20 @@ public class HomeController {
 
     @GetMapping("/reservations")
     public String reservations(Model model, HttpSession session) {
-        User user = userService.get(10000L);
-        session.setAttribute("user", user);
-        Reservation reservation = new Reservation();
-        model.addAttribute("reservation", reservation);
-    
-        return "reservations";
+       // User user = userService.get(10000L);
+        // Replacing hardcoded user with logged in user
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = principal.getUsername();
+        User user = userService.getUserByUserName(name); 
+
+        if(user != null) {
+            session.setAttribute("user", user);
+            Reservation reservation = new Reservation();
+            model.addAttribute("reservation", reservation);
+            return "reservations";
+        }
+
+        return "index";
     }
 
     @PostMapping("/reservations-submit")
